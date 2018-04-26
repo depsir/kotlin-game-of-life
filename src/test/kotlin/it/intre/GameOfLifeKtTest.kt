@@ -9,6 +9,10 @@ class GameOfLifeKtTest{
         assertEquals(listOf<Char>(), evolve(listOf()))
     }
 
+    @Test
+    fun `a world with a single cell evolves in a world with a dead cell`() {
+        assertEquals(listOf('.'), evolve(listOf('.')))
+    }
 }
 
 
