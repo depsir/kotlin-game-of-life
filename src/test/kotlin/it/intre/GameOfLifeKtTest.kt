@@ -25,6 +25,11 @@ class GameOfLifeKtTest{
         assertEquals(listOf(listOf('.','*','.')), evolve(listOf(listOf('*','*','*'))))
     }
 
+    @Test
+    fun `a dead cell with two alive neighbours stays dead`() {
+        assertEquals(listOf(listOf('.','.','.')), evolve(listOf(listOf('*','.','*'))))
+    }
+
 }
 
 

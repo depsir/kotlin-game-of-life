@@ -17,7 +17,7 @@ fun evolve(world: List<List<Char>>): List<List<Char>> {
     return if (worldWidth == 0) world else evolveWorld(world)
 }
 
-fun evolveCell(idx: Int, cell: Char, world: List<Char>): Char = if (countAliveNeighbours(idx, world) == 2 ) '*' else '.'
+fun evolveCell(idx: Int, cell: Char, world: List<Char>): Char = if (countAliveNeighbours(idx, world) == 2) cell else '.'
 
 fun countAliveNeighbours(idx: Int, world: List<Char>) =
         getNeighbours(idx, world)
