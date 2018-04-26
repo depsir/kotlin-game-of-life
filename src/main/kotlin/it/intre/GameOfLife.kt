@@ -1,5 +1,7 @@
 package it.intre
 
 fun evolve(world: List<Char>): List<Char> {
-    return world
+    return world.map(::evolveCell)
 }
+
+fun evolveCell(cell: Char) = '.'
