@@ -30,6 +30,16 @@ class GameOfLifeKtTest{
         assertEquals(listOf(listOf('.','.','.')), evolve(listOf(listOf('*','.','*'))))
     }
 
+    @Test
+    fun `neighbours can also be up or down`() {
+        assertEquals(listOf(listOf('.','.','.'),
+                            listOf('.','*','.'),
+                            listOf('.','.','.')),
+                evolve(listOf(
+                            listOf('.','*','.'),
+                            listOf('.','*','.'),
+                            listOf('.','*','.'))))
+    }
 }
 
 
