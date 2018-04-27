@@ -40,6 +40,47 @@ class GameOfLifeKtTest{
                             listOf('.','*','.'),
                             listOf('.','*','.'))))
     }
+
+    @Test
+    fun `first row`() {
+        assertEquals(listOf(listOf('.','*','.'),
+                            listOf('.','.','.'),
+                            listOf('.','.','.')),
+                evolve(listOf(
+                            listOf('*','*','*'),
+                            listOf('.','.','.'),
+                            listOf('.','.','.'))))
+    }
+    @Test
+    fun `last row`() {
+        assertEquals(listOf(listOf('.','.','.'),
+                            listOf('.','.','.'),
+                            listOf('.','*','.')),
+                evolve(listOf(
+                            listOf('.','.','.'),
+                            listOf('.','.','.'),
+                            listOf('*','*','*'))))
+    }
+    @Test
+    fun `first column`() {
+        assertEquals(listOf(listOf('.','.','.'),
+                            listOf('*','.','.'),
+                            listOf('.','.','.')),
+                evolve(listOf(
+                            listOf('*','.','.'),
+                            listOf('*','.','.'),
+                            listOf('*','.','.'))))
+    }
+    @Test
+    fun `last column`() {
+        assertEquals(listOf(listOf('.','.','.'),
+                            listOf('.','.','*'),
+                            listOf('.','.','.')),
+                evolve(listOf(
+                            listOf('.','.','*'),
+                            listOf('*','.','*'),
+                            listOf('.','.','*'))))
+    }
 }
 
 
