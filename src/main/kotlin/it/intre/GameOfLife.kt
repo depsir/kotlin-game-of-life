@@ -1,8 +1,6 @@
 package it.intre
 
-import org.funktionale.currying.*
-import org.funktionale.composition.*
-import org.funktionale.partials.partially1
+import arrow.syntax.function.*
 
 val map = { transform: (kotlin.Int, Char, List<Char>) -> Char, collection: kotlin.collections.List<Char> ->
     collection.mapIndexed { idx: Int, e: Char -> transform.invoke(idx, e, collection) }
