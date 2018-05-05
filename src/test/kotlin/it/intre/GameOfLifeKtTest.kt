@@ -92,6 +92,17 @@ class GameOfLifeKtTest{
                             listOf('.','.','*'),
                             listOf('.','.','*'))))
     }
+
+    @Test
+    fun `up right is neighbour`() {
+        assertEquals(listOf(listOf('.','.','.'),
+                            listOf('*','.','.'),
+                            listOf('.','.','.')),
+                evolve(listOf(
+                            listOf('.','*','.'),
+                            listOf('*','.','.'),
+                            listOf('*','.','*'))))
+    }
 }
 
 

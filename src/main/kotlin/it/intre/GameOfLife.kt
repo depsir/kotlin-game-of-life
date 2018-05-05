@@ -29,12 +29,13 @@ val evolveCell = {worldWidth:Int, idx: Int, cell: Char, world: List<Char> ->
 
 val getNeighbours = {worldWidth:Int, idx: Int, world: List<Char> -> neighborhood.map { it.invoke(worldWidth)(idx)(world)}}
 
-val neighborhood = listOf(::before, ::after, ::up, ::down, ::upLeft)
+val neighborhood = listOf(::before, ::after, ::up, ::down, ::upLeft, ::upRight)
 fun before(worldWidth:Int) = getWithOffset(- 1)(isOnLeftEdge(worldWidth))
 fun after(worldWidth:Int) = getWithOffset(+ 1)(isOnRightEdge(worldWidth))
 fun up(worldWidth:Int) = getWithOffset(- worldWidth)(isOnFirstRow(worldWidth))
 fun down(worldWidth:Int) = getWithOffset(+ worldWidth)({_:Int -> false})
 fun upLeft(worldWidth:Int) = getWithOffset(-1- worldWidth)(and(isOnFirstRow(worldWidth))(isOnLeftEdge(worldWidth)))
+fun upRight(worldWidth:Int) = getWithOffset(1- worldWidth)(and(isOnFirstRow(worldWidth))(isOnRightEdge(worldWidth)))
 
 val isOnRightEdge = {worldWidth: Int, idx: Int -> (idx + 1) % worldWidth == 0}.curried()
 val isOnLeftEdge = {worldWidth: Int, idx: Int -> (idx % worldWidth) == 0}.curried()
