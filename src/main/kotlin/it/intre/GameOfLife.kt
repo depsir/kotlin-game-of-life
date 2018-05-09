@@ -16,7 +16,7 @@ val windowed = { size: Int, step: Int, flatWorld:List<Char> ->
 infix fun <IP1, IP2, IP3,  R, P1> ((IP1, IP2, IP3) -> P1).andThen(f: (P1) -> R): (IP1, IP2, IP3) -> R {
     return { ip1:  IP1, ip2:IP2, ip3:IP3 -> f(this(ip1,ip2,ip3)) }
 }
-val and = {a:(Int)->Boolean, b:(Int)->Boolean, v:Int -> a(v) && b(v)}.curried()
+val or = { a:(Int)->Boolean, b:(Int)->Boolean, v:Int -> a(v) || b(v)}.curried()
 
 fun evolve(world: List<List<Char>>): List<List<Char>> {
     val worldWidth = world.first().size
@@ -25,7 +25,12 @@ fun evolve(world: List<List<Char>>): List<List<Char>> {
 }
 
 val evolveCell = {worldWidth:Int, idx: Int, cell: Char, world: List<Char> ->
-    if (countAliveNeighbours(worldWidth, idx, world) == 2) cell else '.'}
+    when (countAliveNeighbours(worldWidth, idx, world)){
+        2 -> cell
+        3 -> '*'
+        else -> '.'
+    }
+}
 
 val getNeighbours = {worldWidth:Int, idx: Int, world: List<Char> -> neighborhood.map { it.invoke(worldWidth)(idx)(world)}}
 
@@ -34,8 +39,8 @@ fun before(worldWidth:Int) = getWithOffset(- 1)(isOnLeftEdge(worldWidth))
 fun after(worldWidth:Int) = getWithOffset(+ 1)(isOnRightEdge(worldWidth))
 fun up(worldWidth:Int) = getWithOffset(- worldWidth)(isOnFirstRow(worldWidth))
 fun down(worldWidth:Int) = getWithOffset(+ worldWidth)({_:Int -> false})
-fun upLeft(worldWidth:Int) = getWithOffset(-1- worldWidth)(and(isOnFirstRow(worldWidth))(isOnLeftEdge(worldWidth)))
-fun upRight(worldWidth:Int) = getWithOffset(1- worldWidth)(and(isOnFirstRow(worldWidth))(isOnRightEdge(worldWidth)))
+fun upLeft(worldWidth:Int) = getWithOffset(-1- worldWidth)(or(isOnFirstRow(worldWidth))(isOnLeftEdge(worldWidth)))
+fun upRight(worldWidth:Int) = getWithOffset(1- worldWidth)(or(isOnFirstRow(worldWidth))(isOnRightEdge(worldWidth)))
 fun downRight(worldWidth:Int) = getWithOffset(1+ worldWidth)(isOnRightEdge(worldWidth))
 fun downLeft(worldWidth:Int) = getWithOffset(-1+ worldWidth)(isOnLeftEdge(worldWidth))
 
@@ -45,7 +50,6 @@ val isOnFirstRow: (Int) -> (Int) -> Boolean = { worldWidth: Int, idx: Int -> idx
 
 val getWithOffset = { offset: Int, outOfBound:(Int) -> Boolean, idx: Int, world: List<Char> ->
     if (outOfBound(idx)) getNone(idx) else world.getOrElse(idx+offset, ::getNone)
-
 }.curried()
 
 val countAliveNeighbours = getNeighbours andThen filter(::isAlive) andThen count

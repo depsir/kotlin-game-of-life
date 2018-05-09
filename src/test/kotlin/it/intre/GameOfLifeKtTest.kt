@@ -33,7 +33,7 @@ class GameOfLifeKtTest{
     @Test
     fun `neighbours can also be up or down`() {
         assertEquals(listOf(listOf('.','.','.'),
-                            listOf('.','*','.'),
+                            listOf('*','*','*'),
                             listOf('.','.','.')),
                 evolve(listOf(
                             listOf('.','*','.'),
@@ -44,7 +44,7 @@ class GameOfLifeKtTest{
     @Test
     fun `first row`() {
         assertEquals(listOf(listOf('.','*','.'),
-                            listOf('.','.','.'),
+                            listOf('.','*','.'),
                             listOf('.','.','.')),
                 evolve(listOf(
                             listOf('*','*','*'),
@@ -54,17 +54,17 @@ class GameOfLifeKtTest{
     @Test
     fun `last row`() {
         assertEquals(listOf(listOf('.','.','.'),
-                            listOf('.','.','.'),
+                            listOf('.','*','.'),
                             listOf('.','*','.')),
                 evolve(listOf(
                             listOf('.','.','.'),
-                            listOf('.','.','.'),
-                            listOf('*','*','*'))))
+                            listOf('.','.','*'),
+                            listOf('*','.','*'))))
     }
     @Test
     fun `first column`() {
         assertEquals(listOf(listOf('.','.','.'),
-                            listOf('*','.','.'),
+                            listOf('*','*','.'),
                             listOf('.','.','.')),
                 evolve(listOf(
                             listOf('*','.','.'),
@@ -73,9 +73,9 @@ class GameOfLifeKtTest{
     }
     @Test
     fun `last column`() {
-        assertEquals(listOf(listOf('.','.','.'),
+        assertEquals(listOf(listOf('.','*','.'),
                             listOf('.','.','*'),
-                            listOf('.','.','.')),
+                            listOf('.','*','.')),
                 evolve(listOf(
                             listOf('.','.','*'),
                             listOf('*','.','*'),
@@ -85,7 +85,7 @@ class GameOfLifeKtTest{
     @Test
     fun `up left is neighbour`() {
         assertEquals(listOf(listOf('.','.','.'),
-                            listOf('.','.','*'),
+                            listOf('.','*','*'),
                             listOf('.','.','.')),
                 evolve(listOf(
                             listOf('.','*','.'),
@@ -97,7 +97,7 @@ class GameOfLifeKtTest{
     fun `up right is neighbour`() {
         assertEquals(listOf(listOf('.','.','.'),
                             listOf('*','.','.'),
-                            listOf('.','.','.')),
+                            listOf('.','*','.')),
                 evolve(listOf(
                             listOf('.','*','.'),
                             listOf('*','.','.'),
@@ -106,7 +106,7 @@ class GameOfLifeKtTest{
     @Test
     fun `down right is neighbour`() {
         assertEquals(listOf(listOf('.','.','.'),
-                            listOf('*','.','.'),
+                            listOf('*','*','.'),
                             listOf('.','.','.')),
                 evolve(listOf(
                             listOf('*','.','.'),
@@ -116,13 +116,34 @@ class GameOfLifeKtTest{
     @Test
     fun `down left is neighbour`() {
         assertEquals(listOf(listOf('.','.','.'),
-                            listOf('.','.','*'),
+                            listOf('.','*','*'),
                             listOf('.','.','.')),
                 evolve(listOf(
                             listOf('.','*','.'),
                             listOf('.','.','*'),
                             listOf('.','*','.'))))
     }
+    @Test
+    fun `with three alive neighbours stays alive`() {
+        assertEquals(listOf(listOf('.','*','*'),
+                            listOf('.','.','*'),
+                            listOf('.','.','.')),
+                evolve(listOf(
+                            listOf('.','*','*'),
+                            listOf('.','.','*'),
+                            listOf('.','*','.'))))
+    }
+    @Test
+    fun `with three alive neighbours becomes alive`() {
+        assertEquals(listOf(listOf('.','*','*'),
+                            listOf('.','*','*'),
+                            listOf('.','.','.')),
+                evolve(listOf(
+                            listOf('.','*','*'),
+                            listOf('.','.','*'),
+                            listOf('.','.','.'))))
+    }
+
 }
 
 
