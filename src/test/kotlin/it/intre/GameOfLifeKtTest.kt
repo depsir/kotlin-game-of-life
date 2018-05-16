@@ -144,6 +144,99 @@ class GameOfLifeKtTest{
                             listOf('.','.','.'))))
     }
 
+    @Test
+    fun `square`() {
+        assertStable(listOf(
+            listOf('.', '.', '.', '.'),
+            listOf('.', '*', '*', '.'),
+            listOf('.', '*', '*', '.'),
+            listOf('.', '.', '.', '.')))
+    }
+
+    @Test
+    fun `Beehive`() {
+        assertStable(listOf(
+            listOf('.', '*', '*', '.'),
+            listOf('*', '.', '.', '*'),
+            listOf('.', '*', '*', '.'),
+            listOf('.', '.', '.', '.')))
+    }
+
+    @Test
+    fun `Loaf`() {
+        assertStable(listOf(
+            listOf('.', '*', '*', '.'),
+            listOf('*', '.', '.', '*'),
+            listOf('.', '*', '.', '*'),
+            listOf('.', '.', '*', '.')))
+    }
+
+    @Test
+    fun `Boat`() {
+        assertStable(listOf(
+            listOf('*', '*', '.', '.'),
+            listOf('*', '.', '*', '.'),
+            listOf('.', '*', '.', '.'),
+            listOf('.', '.', '.', '.')))
+    }
+
+    @Test
+    fun `Tub`() {
+        assertStable(listOf(
+            listOf('.', '.', '.', '.'),
+            listOf('.', '.', '*', '.'),
+            listOf('.', '*', '.', '*'),
+            listOf('.', '.', '*', '.')))
+    }
+
+    @Test
+    fun `Blinker one time`() {
+        assertEquals(listOf(listOf('.', '.', '.', '.'),
+                            listOf('.', '.', '*', '.'),
+                            listOf('.', '.', '*', '.'),
+                            listOf('.', '.', '*', '.')),
+                evolve(listOf(
+                            listOf('.', '.', '.', '.'),
+                            listOf('.', '.', '.', '.'),
+                            listOf('.', '*', '*', '*'),
+                            listOf('.', '.', '.', '.'))))
+    }
+    @Test
+    fun `Blinker two times`() {
+        assertOscillator(2, listOf(
+            listOf('.','.','.','.'),
+            listOf('.','.','.','.'),
+            listOf('.','*','*','*'),
+            listOf('.','.','.','.')))
+    }
+    @Test
+    fun `Beacon two times`() {
+        assertOscillator(2, listOf(
+            listOf('*','*','.','.'),
+            listOf('*','*','.','.'),
+            listOf('.','.','*','*'),
+            listOf('.','.','*','*')))
+    }
+
+    fun assertOscillator(times: Int, startPattern: World){
+        assertEquals(startPattern, evolveNTimes(times, startPattern))
+    }
+
+    fun assertStable(pattern: World){
+        assertOscillator(1, pattern)
+    }
+
+    fun evolveNTimes(times: Int, startPattern: World): World {
+        var res = startPattern
+        var times1 = times
+        while (times1-- >0){
+            res = evolve(res)
+
+        }
+        return res
+    }
+
+
 }
 
 
