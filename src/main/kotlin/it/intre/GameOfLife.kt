@@ -1,5 +1,6 @@
 package it.intre
 
+import arrow.syntax.function.andThen
 import arrow.syntax.function.curried
 
 typealias World = List<List<Char>>
@@ -20,8 +21,7 @@ fun evolveCell(world: World, position:Position): Char = when (countAliveNeighbou
 fun countAliveNeighbours(world: World, position: Position): Any {
     val neighbourPositions = listOf(Position(-1,-1), Position(-1,0), Position(-1,1), Position(0,-1),Position(0,1),Position(1,-1),Position(1,0),Position(1,1))
     return neighbourPositions
-            .map( translate(position) )
-            .map( getPosition(world) )
+            .map( translate(position) andThen getPosition(world))
             .filter(::isAlive)
             .count()
 }
