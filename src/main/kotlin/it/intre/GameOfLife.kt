@@ -9,21 +9,24 @@ val getPosition = {world: World, position: Position -> world.getOrNull(position.
 val translate = { first:Position, other: Position -> Position(first.row + other.row, first.column + other.column)}.curried()
 
 fun evolve(world: World): World {
-    return world.mapIndexed { row, list -> list.mapIndexed { col, _ -> evolveCell(world, Position(row, col))} }
+    return world.mapIndexed { row, list -> list.mapIndexed { col, cell ->
+        (countAliveNeighbours(world) andThen evolveCell(cell))(Position(row,col))} }
 }
 
-fun evolveCell(world: World, position:Position): Char = when (countAliveNeighbours(world, position)) {
-    2 -> getPosition(world)(position)
-    3 -> '*'
-    else -> '.'
-}
+val evolveCell = {cell:Char, numberOfAliveNeighbours:Int ->
+     when (numberOfAliveNeighbours) {
+        2 -> cell
+        3 -> '*'
+        else -> '.'
+    }
+}.curried()
 
-fun countAliveNeighbours(world: World, position: Position): Any {
+val countAliveNeighbours = {world: World, position: Position ->
     val neighbourPositions = listOf(Position(-1,-1), Position(-1,0), Position(-1,1), Position(0,-1),Position(0,1),Position(1,-1),Position(1,0),Position(1,1))
-    return neighbourPositions
+    neighbourPositions
             .map( translate(position) andThen getPosition(world))
             .filter(::isAlive)
             .count()
-}
+}.curried()
 
 fun isAlive(cell: Char) = cell == '*'
