@@ -15,20 +15,20 @@ fun evolve(world: World): World {
     }}
 }
 
-val computeNextState = { cell:Char, numberOfAliveNeighbours:Int ->
-     when (numberOfAliveNeighbours) {
-        2 -> cell
-        3 -> '*'
-        else -> '.'
-    }
-}.curried()
-
 val countAliveNeighbours = {world: World, position: Position ->
     val neighbourPositions = listOf(Position(-1,-1), Position(-1,0), Position(-1,1), Position(0,-1),Position(0,1),Position(1,-1),Position(1,0),Position(1,1))
     neighbourPositions
             .map( translate(position) andThen getCellValue(world))
             .filter(::isAlive)
             .count()
+}.curried()
+
+val computeNextState = { cell:Char, numberOfAliveNeighbours:Int ->
+     when (numberOfAliveNeighbours) {
+        2 -> cell
+        3 -> '*'
+        else -> '.'
+    }
 }.curried()
 
 fun isAlive(cell: Char) = cell == '*'
