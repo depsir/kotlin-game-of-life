@@ -1,11 +1,22 @@
 package it.intre
 
+import arrow.data.Try
 import arrow.syntax.function.andThen
 import arrow.syntax.function.curried
 
 typealias World = List<List<Char>>
-data class Position(val row:Int, val column:Int)
-val getCellValue = { world: World, position: Position -> world.getOrNull(position.row)?.getOrNull(position.column) ?: '.'}.curried()
+
+data class Position(val row: Int, val column: Int)
+
+val getCellValue = { world: World, position: Position ->
+    Try {
+        world[position.row][position.column]
+    }.fold(
+            { '.' },
+            { it }
+    )
+}.curried()
+
 val translate = { first:Position, other: Position -> Position(first.row + other.row, first.column + other.column)}.curried()
 
 fun evolve(world: World): World {
@@ -24,7 +35,7 @@ val countAliveNeighbours = {world: World, position: Position ->
 }.curried()
 
 val computeNextState = { cell:Char, numberOfAliveNeighbours:Int ->
-     when (numberOfAliveNeighbours) {
+    when (numberOfAliveNeighbours) {
         2 -> cell
         3 -> '*'
         else -> '.'
