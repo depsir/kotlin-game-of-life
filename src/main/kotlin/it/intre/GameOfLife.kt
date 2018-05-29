@@ -1,13 +1,16 @@
 package it.intre
 
+import arrow.data.Try
 import arrow.syntax.function.andThen
 import arrow.syntax.function.curried
 
+val DEAD_CELL = '.'
+val ALIVE_CELL = '*'
+
 data class World<out A>(val ll: List<List<A>>)
 {
-    fun getOrNull(row:Int, column: Int) {
-        ll.getOrNull(row)
-                ?.getOrNull(column)
+    fun tryGet(row:Int, column: Int):Try<A> {
+        return Try { ll[row][column] }
     }
 
     fun <B>map(f : (A) -> B):World<B>   {
@@ -26,43 +29,31 @@ data class World<out A>(val ll: List<List<A>>)
         })
     }
 
+    companion object {
+        fun <A>empty(): World<A> = World(listOf(listOf()))
+        fun <A>of(ll: List<List<A>>): World<A> = World(ll)
+    }
+}
+
 data class Cell(val state: Char, val aliveNs: Int)
 data class Position(val row: Int, val column: Int)
 
-
-val DEAD_CELL = '.'
-val ALIVE_CELL = '*'
 val getCellValue = { world: World<Char>, position: Position ->
-    world.getOrNull(position.row, position.column)
-            ?: DEAD_CELL
+    world.tryGet(position.row, position.column)
+         .fold({ DEAD_CELL }, { it })
 }
-        .curried()
+.curried()
+
 val translate = { first: Position,
                   other: Position ->
     Position(first.row + other.row, first.column + other.column)
 }.curried()
 
 fun evolve(world: World<Char>): World<Char> {
-    return computeNextStates(toCell(world, addPosition(world)))
-}
-
-fun computeNextStates(w: World<Cell>): World<Char> {
-    return w.map { cell ->
-            computeNextState(cell)
-        }
-}
-
-fun addPosition(world: World<Char>): World<Pair<Char, Position>> {
-    return world.mapIndexed { cell, pair ->
-            cell to Position(pair.first, pair.second)
-    }
-}
-
-
-fun toCell(world: World<Char>, ll: World<Pair<Char, Position>>): World<Cell> {
-    return ll.map { pair ->
-            Cell(pair.first, countAliveNeighbours(world)(pair.second))
-    }
+    return world
+        .mapIndexed { cell, pair -> cell to Position(pair.first, pair.second) }
+        .map { pair -> Cell(pair.first, countAliveNeighbours(world)(pair.second)) }
+        .map { cell -> computeNextState(cell) }
 }
 
 val countAliveNeighbours = { world: World<Char>, position: Position ->
