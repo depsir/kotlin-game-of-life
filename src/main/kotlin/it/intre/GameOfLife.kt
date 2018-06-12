@@ -6,34 +6,26 @@ data class Field(val row: Int, val column: Int, val isAlive: Boolean)
 
 
 fun evolve(world: World): World {
-    val myList = convertWorldToFieldList(world)
-
-    val nextGeneration = myList.map { field -> evolve(field, myList) }
-
-    return convertFieldListToWorld(nextGeneration)
-
-}
-
-fun evolve(field: Field, myList: Set<Field>): Field {
-    //Any live cell with fewer than two live neighbors dies, as if by under population.
-    //Any live cell with two or three live neighbors lives on to the next generation.
-    //Any live cell with more than three live neighbors dies, as if by overpopulation.
-    //Any dead cell with exactly three live neighbors becomes a live cell, as if by reproduction.
-
-
-    val neighbours = countAliveNeighbours(field, myList)
-    when {
-        field.isAlive && neighbours < 2 -> return field.copy(isAlive = false)
-        field.isAlive && neighbours in listOf(2, 3) -> return field.copy(isAlive = true)
-        field.isAlive && neighbours > 3 -> return field.copy(isAlive = false)
-        !field.isAlive && neighbours == 3 -> return field.copy(isAlive = true)
+    val currentGeneration = convertWorldToFieldList(world)
+    val nextGeneration = currentGeneration.map { field ->
+        val noOfNeighbours = countAliveNeighbours(field, currentGeneration)
+        evolveField(field, noOfNeighbours)
     }
-
-    return field
+    return convertFieldListToWorld(nextGeneration)
 }
 
-fun countAliveNeighbours(currentField: Field, myList: Set<Field>): Int {
-    val neighbours = myList
+fun evolveField(field: Field, noOfNeighbours: Int): Field {
+    return when {
+        field.isAlive && noOfNeighbours < 2 -> dead(field)
+        field.isAlive && noOfNeighbours in listOf(2, 3) -> alive(field)
+        field.isAlive && noOfNeighbours > 3 -> dead(field)
+        !field.isAlive && noOfNeighbours == 3 -> alive(field)
+        else -> field
+    }
+}
+
+private fun countAliveNeighbours(currentField: Field, fields: Set<Field>): Int {
+    val neighbours = fields
             .filter { field -> field.column in listOf(currentField.column - 1, currentField.column, currentField.column + 1) }
             .filter { field -> field.row in listOf(currentField.row - 1, currentField.row, currentField.row + 1) }
             .filterNot { field -> field == currentField }
@@ -41,7 +33,11 @@ fun countAliveNeighbours(currentField: Field, myList: Set<Field>): Int {
     return neighbours.size
 }
 
-fun convertFieldListToWorld(nextGeneration: List<Field>): World {
+private fun alive(field: Field) = field.copy(isAlive = true)
+
+private fun dead(field: Field) = field.copy(isAlive = false)
+
+private fun convertFieldListToWorld(nextGeneration: List<Field>): World {
 
     if (nextGeneration.isEmpty()) {
         return listOf(emptyList())
@@ -71,7 +67,7 @@ fun convertFieldListToWorld(nextGeneration: List<Field>): World {
     return rows.reversed()
 }
 
-fun convertWorldToFieldList(world: World): Set<Field> {
+private fun convertWorldToFieldList(world: World): Set<Field> {
     val emptyList = mutableSetOf<Field>()
 
     for ((rowCounter, row) in world.withIndex()) {
