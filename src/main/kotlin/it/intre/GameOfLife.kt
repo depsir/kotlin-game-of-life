@@ -42,6 +42,11 @@ fun countAliveNeighbours(currentField: Field, myList: Set<Field>): Int {
 }
 
 fun convertFieldListToWorld(nextGeneration: List<Field>): World {
+
+    if (nextGeneration.isEmpty()) {
+        return listOf(emptyList())
+    }
+
     val maxRow = nextGeneration.maxBy { field -> field.row }?.row ?: 0
     val maxColumn = nextGeneration.maxBy { field -> field.column }?.column ?: 0
 
@@ -63,7 +68,7 @@ fun convertFieldListToWorld(nextGeneration: List<Field>): World {
         }
         rowCounter++
     }
-    return rows
+    return rows.reversed()
 }
 
 fun convertWorldToFieldList(world: World): Set<Field> {
